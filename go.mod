@@ -9,7 +9,7 @@ require (
 	github.com/fatih/color v1.16.0
 	github.com/json-iterator/go v1.1.12
 	github.com/stretchr/testify v1.9.0
-	go.mongodb.org/mongo-driver v1.14.0
+	go.mongodb.org/mongo-driver v1.15.0
 	golang.org/x/exp v0.0.0-20240409090435-93d18d7e34b8
 )
 
@@ -20,6 +20,8 @@ require (
 	github.com/emersion/go-message v0.18.0 // indirect
 	github.com/emersion/go-sasl v0.0.0-20231106173351-e73c9f7bad43 // indirect
 	github.com/emersion/go-textwrapper v0.0.0-20200911093747-65d896831594 // indirect
+	github.com/fpawel/errorx v0.0.0-20240415152557-293f825800f2 // indirect
+	github.com/fpawel/slogx v0.0.0-20240415154425-3624989c19da // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect

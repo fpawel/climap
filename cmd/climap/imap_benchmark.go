@@ -1,12 +1,12 @@
 package main
 
 import (
-	"climap/pkg/errorx"
-	"climap/pkg/slog/attr"
 	"errors"
 	"github.com/elliotchance/pie/v2"
 	"github.com/emersion/go-imap/v2"
 	"github.com/emersion/go-imap/v2/imapclient"
+	"github.com/fpawel/errorx"
+	"github.com/fpawel/slogx"
 	"github.com/sourcegraph/conc/pool"
 	"log/slog"
 	"time"
@@ -49,7 +49,7 @@ func (x imapBenchmark) do() error {
 			return err
 		}
 		iteration++
-		x.log.Info("done", attr.Since(tm), "iteration", iteration, "connections", x.b.Cons.Get())
+		x.log.Info("done", slogx.Since(tm), "iteration", iteration, "connections", x.b.Cons.Get())
 	}
 }
 

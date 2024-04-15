@@ -1,8 +1,8 @@
 package main
 
 import (
-	"climap/pkg/slog/pretty"
-	"climap/pkg/slog/slogctx"
+	"github.com/fpawel/slogx/pretty"
+	"github.com/fpawel/slogx/slogctx"
 	"log/slog"
 )
 

@@ -2,7 +2,7 @@ package main
 
 import (
 	"bytes"
-	"climap/pkg/errorx"
+	"github.com/fpawel/errorx"
 	"os"
 	"path/filepath"
 	"regexp"

@@ -19,6 +19,12 @@ github.com/emersion/go-textwrapper v0.0.0-20200911093747-65d896831594 h1:IbFBtwo
 github.com/emersion/go-textwrapper v0.0.0-20200911093747-65d896831594/go.mod h1:aqO8z8wPrjkscevZJFVE1wXJrLpC5LtJG7fqLOsPb2U=
 github.com/fatih/color v1.16.0 h1:zmkK9Ngbjj+K0yRhTVONQh1p/HknKYSlNT+vZCzyokM=
 github.com/fatih/color v1.16.0/go.mod h1:fL2Sau1YI5c0pdGEVCbKQbLXB6edEj1ZgiY4NijnWvE=
+github.com/fpawel/errorx v0.0.0-20240415152557-293f825800f2 h1:O9L/yo4cNeNXGqefzMQhGbs0SCYq5fCBqo06PQFniRc=
+github.com/fpawel/errorx v0.0.0-20240415152557-293f825800f2/go.mod h1:faJUTzvW6DIHw3gKRd1Gng0PbrNokIW37Df8JyxkxEg=
+github.com/fpawel/slogx v0.0.0-20240415153753-9e5892abec86 h1:AOm2KmWBA2HVV3J6Rg46GNAgTY3/thiXSr0wbSHJAJM=
+github.com/fpawel/slogx v0.0.0-20240415153753-9e5892abec86/go.mod h1:eML1JoOPF1A1NE+E8/MiQsXIy4D4tuXXrp3PbPWM9v4=
+github.com/fpawel/slogx v0.0.0-20240415154425-3624989c19da h1:EcH/eBsHbeIQ2RzGbCSDkTufKWhCYVtVVWFtvNz+gcU=
+github.com/fpawel/slogx v0.0.0-20240415154425-3624989c19da/go.mod h1:eML1JoOPF1A1NE+E8/MiQsXIy4D4tuXXrp3PbPWM9v4=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
@@ -44,6 +50,7 @@ github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 go.mongodb.org/mongo-driver v1.14.0 h1:P98w8egYRjYe3XDjxhYJagTokP/H6HzlsnojRgZRd80=
 go.mongodb.org/mongo-driver v1.14.0/go.mod h1:Vzb0Mk/pa7e6cWw85R4F/endUC3u0U9jGcNU603k65c=
+go.mongodb.org/mongo-driver v1.15.0/go.mod h1:Vzb0Mk/pa7e6cWw85R4F/endUC3u0U9jGcNU603k65c=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
 golang.org/x/exp v0.0.0-20240409090435-93d18d7e34b8 h1:ESSUROHIBHg7USnszlcdmjBEwdMj9VUvU+OPk4yl2mc=

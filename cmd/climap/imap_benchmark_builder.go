@@ -1,10 +1,9 @@
 package main
 
 import (
-	"climap/pkg/errorx"
-	"climap/pkg/slog/attr"
 	"crypto/tls"
 	"github.com/emersion/go-imap/v2/imapclient"
+	"github.com/fpawel/errorx"
 	"log/slog"
 	"time"
 )
@@ -40,7 +39,7 @@ func (x imapBenchmarkBuilder) doBenchmark() error {
 	}
 	defer func() {
 		if err := c.Close(); err != nil {
-			c.log.Error("close", "session-id", c.s.sessionID, attr.Err(err))
+			c.log.Error("close", "session-id", c.s.sessionID, errorx.Attr(err))
 		}
 	}()
 	if err := c.do(); err != nil {

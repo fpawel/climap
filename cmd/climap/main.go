@@ -1,8 +1,8 @@
 package main
 
 import (
-	"climap/pkg/slog/attr"
 	"github.com/alexflint/go-arg"
+	"github.com/fpawel/errorx"
 	"log/slog"
 	"strings"
 	"sync/atomic"
@@ -38,7 +38,7 @@ func main() {
 		go func() {
 			for {
 				if err := b.doBenchmark(); err != nil {
-					slog.Error("failed", attr.Err(err), "N", b.N, "connections", connections.Load())
+					slog.Error("failed", errorx.Attr(err), "N", b.N, "connections", connections.Load())
 				}
 			}
 		}()

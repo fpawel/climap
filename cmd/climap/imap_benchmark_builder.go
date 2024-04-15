@@ -14,10 +14,22 @@ type (
 		Addr  string
 		N     int
 		Creds CredentialsGetter
+		Cons  ConnectionsCount
+		TestMailProvider
+	}
+
+	TestMailProvider interface {
+		NewTestMail() string
 	}
 
 	CredentialsGetter interface {
 		GetCredentials(N int) (string, string, error)
+	}
+
+	ConnectionsCount interface {
+		Inc() int64
+		Dec() int64
+		Get() int64
 	}
 )
 

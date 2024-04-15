@@ -9,7 +9,6 @@ import (
 	"github.com/emersion/go-imap/v2/imapclient"
 	"github.com/sourcegraph/conc/pool"
 	"log/slog"
-	"sync/atomic"
 	"time"
 )
 
@@ -34,10 +33,8 @@ func (x imapBenchmark) do() error {
 		return errorx.Prepend("login").Args("login", login).Wrap(err)
 	}
 
-	x.log.Info("in", "connections", atomic.AddInt64(&connections, 1))
-	defer func() {
-		atomic.AddInt64(&connections, -1)
-	}()
+	x.log.Info("in", "connections", x.b.Cons.Inc())
+	defer x.b.Cons.Dec()
 
 	iteration := 0
 	for {
@@ -52,7 +49,7 @@ func (x imapBenchmark) do() error {
 			return err
 		}
 		iteration++
-		x.log.Info("done", attr.Since(tm), "iteration", iteration, "connections", atomic.LoadInt64(&connections))
+		x.log.Info("done", attr.Since(tm), "iteration", iteration, "connections", x.b.Cons.Get())
 	}
 }
 
@@ -83,7 +80,7 @@ func (x imapBenchmark) AppendRandomMails(mailbox string, n int) ([]imap.AppendDa
 
 func (x imapBenchmark) AppendRandomMail(mailbox string) (imap.AppendData, error) {
 	e := errorx.Args("mailbox", mailbox)
-	buf := []byte(newRandomMail())
+	buf := []byte(x.b.NewTestMail())
 	size := int64(len(buf))
 	rc := x.c.Append(mailbox, size, nil)
 	_, err := rc.Write(buf)

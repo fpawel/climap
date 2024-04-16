@@ -1,15 +1,18 @@
-package bench
+package session
 
 import (
 	"bytes"
+	"crypto/tls"
+	"github.com/emersion/go-imap/v2/imapclient"
 	"github.com/fpawel/errorx"
 	"os"
 	"path/filepath"
 	"regexp"
 	"sync"
+	"time"
 )
 
-type sessionSniffer struct {
+type Session struct {
 	sessionID string
 	buff      bytes.Buffer
 	fd        *os.File
@@ -18,7 +21,27 @@ type sessionSniffer struct {
 
 var reUUID = regexp.MustCompile(`\* OK New Cloud Technologies IMAP welcomes you -- ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12})`)
 
-func (x *sessionSniffer) write(p []byte) (int, error) {
+func NewSessionClient(addr string, tlsConfig *tls.Config) (*imapclient.Client, *Session, error) {
+	var ses Session
+	ses.wg.Add(1)
+	tm := time.Now()
+	imapClient, err := imapclient.DialTLS(addr, &imapclient.Options{TLSConfig: tlsConfig, DebugWriter: &ses})
+	if err != nil {
+		return nil, nil, errorx.Prepend("failed to dial IMAP server").Args("since", time.Since(tm).String()).Wrap(err)
+	}
+	ses.wg.Wait()
+	return imapClient, &ses, nil
+}
+
+func (x *Session) SessionID() string {
+	return x.sessionID
+}
+
+func (x *Session) Close() error {
+	return x.fd.Close()
+}
+
+func (x *Session) write(p []byte) (int, error) {
 	if _, err := x.fd.Write(p); err != nil {
 		return 0, errorx.Prepend("write").Wrap(err)
 	}
@@ -28,7 +51,7 @@ func (x *sessionSniffer) write(p []byte) (int, error) {
 	return len(p), nil
 }
 
-func (x *sessionSniffer) Write(p []byte) (int, error) {
+func (x *Session) Write(p []byte) (int, error) {
 	if x.fd != nil {
 		return x.write(p)
 	}

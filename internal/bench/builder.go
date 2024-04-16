@@ -1,15 +1,16 @@
 package bench
 
 import (
+	"climap/internal/session"
 	"crypto/tls"
-	"github.com/emersion/go-imap/v2/imapclient"
 	"github.com/fpawel/errorx"
 	"log/slog"
+	"sync/atomic"
 	"time"
 )
 
 type (
-	builder struct {
+	Builder struct {
 		addr  string
 		N     int
 		creds CredentialsGetter
@@ -18,7 +19,7 @@ type (
 	}
 
 	MailProvider interface {
-		NewMail() string
+		NewMail(from string) string
 	}
 
 	CredentialsGetter interface {
@@ -26,40 +27,42 @@ type (
 	}
 )
 
-func (x builder) Do() error {
+func NewBuilder(addr string, N int, creds CredentialsGetter, m MailProvider, cons *atomic.Int64) Builder {
+	return Builder{
+		addr:         addr,
+		N:            N,
+		creds:        creds,
+		MailProvider: m,
+		cons:         connections{cons},
+	}
+}
+
+func (x Builder) Do() error {
 	c, err := x.new()
 	if err != nil {
 		return errorx.Wrap(err)
 	}
 	defer func() {
 		if err := c.Close(); err != nil {
-			c.log.Error("close", "session-id", c.s.sessionID, errorx.Attr(err))
+			c.log.Error("close", "session-id", c.s.SessionID(), errorx.Attr(err))
 		}
 	}()
 	if err := c.do(); err != nil {
-		return errorx.Args("N", x.N, "session-id", c.s.sessionID).Wrap(err)
+		return errorx.Args("N", x.N, "session-id", c.s.SessionID()).Wrap(err)
 	}
 	return nil
 }
 
-func (x builder) new() (r benchmark, _ error) {
-	var sesID sessionSniffer
-	sesID.wg.Add(1)
+func (x Builder) new() (r benchmark, _ error) {
 	tm := time.Now()
-	imapClient, err := imapclient.DialTLS(x.addr, &imapclient.Options{
-		TLSConfig: &tls.Config{
-			InsecureSkipVerify: true,
-		},
-		DebugWriter: &sesID,
-	})
+	imapClient, ses, err := session.NewSessionClient(x.addr, &tls.Config{InsecureSkipVerify: true})
 	if err != nil {
 		return r, errorx.Prepend("failed to dial IMAP server").Args("since", time.Since(tm).String()).Wrap(err)
 	}
-	sesID.wg.Wait()
 	return benchmark{
-		s:   &sesID,
+		s:   ses,
 		b:   x,
 		c:   imapClient,
-		log: slog.Default().With("session-id", sesID.sessionID, "N", x.N),
+		log: slog.Default().With("session-id", ses.SessionID(), "N", x.N),
 	}, nil
 }

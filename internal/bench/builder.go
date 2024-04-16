@@ -1,4 +1,4 @@
-package main
+package bench
 
 import (
 	"crypto/tls"
@@ -9,31 +9,25 @@ import (
 )
 
 type (
-	imapBenchmarkBuilder struct {
-		Addr  string
+	builder struct {
+		addr  string
 		N     int
-		Creds CredentialsGetter
-		Cons  ConnectionsCount
-		TestMailProvider
+		creds CredentialsGetter
+		cons  connections
+		MailProvider
 	}
 
-	TestMailProvider interface {
-		NewTestMail() string
+	MailProvider interface {
+		NewMail() string
 	}
 
 	CredentialsGetter interface {
 		GetCredentials(N int) (string, string, error)
 	}
-
-	ConnectionsCount interface {
-		Inc() int64
-		Dec() int64
-		Get() int64
-	}
 )
 
-func (x imapBenchmarkBuilder) doBenchmark() error {
-	c, err := x.newBenchmark()
+func (x builder) Do() error {
+	c, err := x.new()
 	if err != nil {
 		return errorx.Wrap(err)
 	}
@@ -48,11 +42,11 @@ func (x imapBenchmarkBuilder) doBenchmark() error {
 	return nil
 }
 
-func (x imapBenchmarkBuilder) newBenchmark() (r imapBenchmark, _ error) {
+func (x builder) new() (r benchmark, _ error) {
 	var sesID sessionSniffer
 	sesID.wg.Add(1)
 	tm := time.Now()
-	imapClient, err := imapclient.DialTLS(x.Addr, &imapclient.Options{
+	imapClient, err := imapclient.DialTLS(x.addr, &imapclient.Options{
 		TLSConfig: &tls.Config{
 			InsecureSkipVerify: true,
 		},
@@ -62,7 +56,7 @@ func (x imapBenchmarkBuilder) newBenchmark() (r imapBenchmark, _ error) {
 		return r, errorx.Prepend("failed to dial IMAP server").Args("since", time.Since(tm).String()).Wrap(err)
 	}
 	sesID.wg.Wait()
-	return imapBenchmark{
+	return benchmark{
 		s:   &sesID,
 		b:   x,
 		c:   imapClient,

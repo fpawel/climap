@@ -1,6 +1,7 @@
 package main
 
 import (
+	"climap/internal/bench"
 	"github.com/alexflint/go-arg"
 	"github.com/fpawel/errorx"
 	"log/slog"
@@ -20,7 +21,7 @@ func main() {
 	arg.MustParse(&args)
 	xs := strings.Split(args.ImapCreds, ",")
 
-	sentences := mustNewtestMailProviderFromSentencesFile(args.SentencesFilePath)
+	sentences := bench.mustNewtestMailProviderFromSentencesFile(args.SentencesFilePath)
 
 	var connections atomic.Int64
 
@@ -32,7 +33,7 @@ func main() {
 				login:    xs[0],
 				password: xs[1],
 			},
-			Cons:             Connections{Int64: &connections},
+			Cons:             bench.connections{Int64: &connections},
 			TestMailProvider: sentences,
 		}
 		go func() {

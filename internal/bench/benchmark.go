@@ -1,6 +1,7 @@
 package bench
 
 import (
+	"climap/internal/session"
 	"errors"
 	"github.com/elliotchance/pie/v2"
 	"github.com/emersion/go-imap/v2"
@@ -13,14 +14,14 @@ import (
 )
 
 type benchmark struct {
-	s   *sessionSniffer
-	b   builder
+	s   *session.Session
+	b   Builder
 	c   *imapclient.Client
 	log *slog.Logger
 }
 
 func (x benchmark) Close() error {
-	return errors.Join(x.s.fd.Close(), x.c.Close())
+	return errors.Join(x.s.Close(), x.c.Close())
 }
 
 func (x benchmark) do() error {
@@ -80,7 +81,7 @@ func (x benchmark) appendRandomMails(mailbox string, n int) ([]imap.AppendData, 
 
 func (x benchmark) appendRandomMail(mailbox string) (imap.AppendData, error) {
 	e := errorx.Args("mailbox", mailbox)
-	buf := []byte(x.b.NewMail())
+	buf := []byte(x.b.NewMail("reptiloid@nibiru.gov"))
 	size := int64(len(buf))
 	rc := x.c.Append(mailbox, size, nil)
 	_, err := rc.Write(buf)

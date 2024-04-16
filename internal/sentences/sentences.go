@@ -1,10 +1,10 @@
-package messages
+package sentences
 
 import (
 	"bufio"
 	"fmt"
 	"github.com/fpawel/errorx"
-	"log/slog"
+	"golang.org/x/exp/slog"
 	"math/rand/v2"
 	"os"
 	"slices"
@@ -13,12 +13,21 @@ import (
 
 type FileSentences []string
 
-func (x FileSentences) NewMail() string {
+func (x FileSentences) NewMail(from string) string {
 	sentences := slices.Clone(x)
 	rand.Shuffle(len(sentences), func(i, j int) {
 		sentences[i], sentences[j] = sentences[j], sentences[i]
 	})
-	return fmt.Sprintf("From: <root@nsa.gov>\r\nSubject: %s\r\n\r\n%s", sentences[0], sentences[1])
+	return fmt.Sprintf(`Date: Mon, 7 Feb 1994 21:52:25 -0800 (PST)
+From: Reptiloid from Nibiru <%s>
+Subject: %s
+To: mooch@owatagu.siam.edu
+Message-Id: <B27397-0100000@Blurdybloop.COM>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+
+%s
+`, from, sentences[0], sentences[1])
 }
 
 func NewFileSentences(filePath string) (sentences FileSentences, _ error) {

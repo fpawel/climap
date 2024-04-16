@@ -9,7 +9,7 @@ import (
 func Run(imapAddr string, connectionsCount int, creds CredentialsGetter, mailsProvider MailProvider) {
 	var cons atomic.Int64
 	for N := 0; N < connectionsCount; N++ {
-		b := builder{
+		b := Builder{
 			addr:         imapAddr,
 			N:            N,
 			creds:        creds,

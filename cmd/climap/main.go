@@ -2,10 +2,11 @@ package main
 
 import (
 	"climap/internal/bench"
+	"climap/internal/creds"
+	"climap/internal/sentences"
 	"github.com/alexflint/go-arg"
 	"github.com/fpawel/errorx"
 	"log/slog"
-	"strings"
 	"sync/atomic"
 )
 
@@ -19,26 +20,20 @@ type Args struct {
 func main() {
 	var args Args
 	arg.MustParse(&args)
-	xs := strings.Split(args.ImapCreds, ",")
 
-	sentences := bench.mustNewtestMailProviderFromSentencesFile(args.SentencesFilePath)
+	mails, err := sentences.NewFileSentences(args.SentencesFilePath)
+	check(err, "read sentences file")
 
 	var connections atomic.Int64
+	credentials, err := creds.Parse(args.ImapCreds)
+	check(err, "parse credentials")
 
 	for N := 0; N < args.Connections; N++ {
-		b := imapBenchmarkBuilder{
-			Addr: args.ImapAddr,
-			N:    N,
-			Creds: creds{
-				login:    xs[0],
-				password: xs[1],
-			},
-			Cons:             bench.connections{Int64: &connections},
-			TestMailProvider: sentences,
-		}
+		b := bench.NewBuilder(args.ImapAddr, N, credentials, mails, &connections)
+
 		go func() {
 			for {
-				if err := b.doBenchmark(); err != nil {
+				if err := b.Do(); err != nil {
 					slog.Error("failed", errorx.Attr(err), "N", b.N, "connections", connections.Load())
 				}
 			}
